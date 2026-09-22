@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
   <title>places.</title>
   <meta name="description" content="Our map of places to eat, visit and do.">
+  <!-- Send Google the full page address, not just the site root, so the API
+       key can stay restricted to /places/. Search requests fail otherwise. -->
+  <meta name="referrer" content="no-referrer-when-downgrade">
   <meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#1a1d22" media="(prefers-color-scheme: dark)">
   <meta name="apple-mobile-web-app-capable" content="yes">
