@@ -1,4 +1,5 @@
 import * as db from "./db.js";
+import { requireAuth } from "/lifeos/auth.js";
 import * as g from "./google.js";
 import { SUGGEST_WHAT, SUGGEST_WHO, suggestionTypes, matchesWho, whoLabel } from "./suggest.js";
 
@@ -475,7 +476,7 @@ async function renderSettings(body) {
       refresh();
     } catch (e) { fail("Couldn’t add the list")(e); }
   };
-  $("sign-out").onclick = async () => { await db.signOut(); location.reload(); };
+  $("sign-out").onclick = () => db.signOut();
   const session = await db.getSession();
   $("who-am-i").textContent = session ? `Signed in as ${session.user.email}` : "";
 
@@ -600,7 +601,6 @@ function locate() {
 
 // ─── Start ───────────────────────────────────────────────────────────
 async function start() {
-  $("login").hidden = true;
   ["top", "sheet", "locate"].forEach(id => $(id).hidden = false);
   try {
     let listTimer;
@@ -624,21 +624,6 @@ async function start() {
   if (state.places.length) g.fitTo(state.places);
 }
 
-function showLogin() {
-  $("login").hidden = false;
-  const form = $("login-form");
-  form.onsubmit = async (e) => {
-    e.preventDefault();
-    $("login-error").textContent = "";
-    const btn = form.querySelector("button");
-    btn.disabled = true;
-    try {
-      await db.signIn(form.email.value.trim(), form.password.value);
-      start();
-    } catch (err) {
-      $("login-error").textContent = err.message === "Invalid login credentials" ? "That email and password don’t match." : err.message;
-    } finally { btn.disabled = false; }
-  };
-}
-
-(await db.getSession()) ? start() : showLogin();
+// Signing in happens once, on the lifeOS. sign-in page.
+await requireAuth();
+start();

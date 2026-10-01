@@ -47,14 +47,9 @@
     button { cursor:pointer; }
     [hidden] { display:none !important; }
 
-    /* ── Sign in ── */
-    .login { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; padding:24px; background:var(--bg); z-index:50; }
-    .login form { width:100%; max-width:360px; }
-    .login h1 { font-family:var(--hub-head, 'Lora', Georgia, serif); font-style:var(--hub-logo-style, italic); font-weight:600; font-size:44px; margin:0 0 4px; text-align:center; letter-spacing:-1px; }
-    .login p { color:var(--muted); text-align:center; margin:0 0 24px; }
+    /* ── Fields ── */
     .field { width:100%; padding:12px 14px; border-radius:10px; border:1px solid var(--border); background:var(--card); font-size:16px; outline:none; margin-bottom:10px; }
     .field:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
-    .login .error { color:var(--danger); font-size:14px; min-height:20px; margin:4px 0 8px; text-align:center; }
 
     .logo-dot { color:var(--accent); font-style:normal; }
 
@@ -217,17 +212,6 @@
   </style>
 </head>
 <body data-sheet="peek">
-  <div class="login" id="login" hidden>
-    <form id="login-form">
-      <h1>places<span class="logo-dot">.</span></h1>
-      <p>Sign in with your food. account.</p>
-      <input class="field" type="email" name="email" placeholder="Email" autocomplete="username" required>
-      <input class="field" type="password" name="password" placeholder="Password" autocomplete="current-password" required>
-      <div class="error" id="login-error"></div>
-      <button class="btn primary wide" style="width:100%">Sign in</button>
-    </form>
-  </div>
-
   <div class="map-wrap"><div id="map"></div></div>
 
   <div class="top" id="top" hidden>

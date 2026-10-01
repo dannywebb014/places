@@ -3,10 +3,10 @@
 // Same project and account as foodhub. Every call throws on error rather
 // than returning quietly, so a failed save is always shown to the user.
 
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/+esm";
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
+// The client is the one shared by every hub app, so the lifeOS. sign-in carries over.
+import { supabase, signOut as hubSignOut } from "/lifeos/auth.js";
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+export { supabase };
 
 const check = ({ data, error }) => {
   if (error) throw new Error(error.message);
@@ -16,8 +16,8 @@ const check = ({ data, error }) => {
 // ── Session ──
 export const getSession = async () => (await supabase.auth.getSession()).data.session;
 export const onAuthChange = (fn) => supabase.auth.onAuthStateChange((_e, session) => fn(session));
-export const signIn = (email, password) => supabase.auth.signInWithPassword({ email, password }).then(check);
-export const signOut = () => supabase.auth.signOut();
+// Signs out of every hub app on this device and goes to the lifeOS. sign-in.
+export const signOut = () => hubSignOut();
 
 // ── Lists ──
 export const DEFAULT_LISTS = [
