@@ -242,5 +242,9 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script type="module" src="app.js"></script>
+  <script>
+    // Opens fast and works with no signal (sw.js keeps the app's files here).
+    if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(err => console.warn("Offline copy:", err));
+  </script>
 </body>
 </html>
