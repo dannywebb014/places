@@ -618,10 +618,33 @@ async function start() {
     fail("Couldn’t load your places")(e);
   }
   setupSearch();
+  takeFromAddBox();
   $("locate").onclick = locate;
   $("open-settings").onclick = () => { state.back = state.view === "suggest" ? "suggest" : "list"; state.view = "settings"; refresh(); growSheet("half"); };
   refresh();
   if (state.places.length) g.fitTo(state.places);
+}
+
+// Places typed into lifeOS's add box ("place: Dishoom Shoreditch") wait in
+// app_state ("places-inbox"), because only a search here can put one on the
+// map. The first goes into the search box; any others wait for next time.
+async function takeFromAddBox() {
+  try {
+    const got = await db.supabase.from("app_state").select("data").eq("app", "places-inbox").maybeSingle();
+    if (got.error) throw got.error;
+    const [first, ...rest] = got.data?.data?.items || [];
+    if (!first) return;
+    const { data: { user } } = await db.supabase.auth.getUser();
+    const put = await db.supabase.from("app_state").upsert({ user_id: user.id, app: "places-inbox", data: { items: rest }, updated_at: new Date().toISOString() }, { onConflict: "user_id,app" });
+    if (put.error) throw put.error;
+    const input = $("search");
+    input.value = first.name;
+    input.dispatchEvent(new Event("input"));
+    input.focus();
+    toast(`From the add box: pick ${first.name} below${rest.length ? ` · ${rest.length} more next time` : ""}`);
+  } catch (e) {
+    console.error("Places from the add box:", e);
+  }
 }
 
 // Signing in happens once, on the lifeOS. sign-in page.
